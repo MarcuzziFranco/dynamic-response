@@ -1,0 +1,34 @@
+{
+  "id": "TEMPLATE_9",
+  "templateProperties": {
+    "nombre": "Name",
+    "apellido": "LastName",
+    "direccion": {
+       "calle":"Direction/Street",
+       "numero":"Direction/StreetNumber",
+    }
+  }
+}
+
+
+{
+   "id": "TEMPLATE_10",
+   "templateProperties": {
+   "nombreCompleto": "Name + LastName",
+   "direccion": {
+     "calle":"Direction/Street",
+     "numero":"Direction/StreetNumber"
+    }
+  }
+}
+
+
+{
+   "id": "TEMPLATE_12",
+   "templateProperties": {
+   "nombreCompleto": "Name + LastName",
+   "direccion": {
+     "direccionCompleta":"Direction/Street + Direction/StreetNumber" 
+   }
+ }
+}
