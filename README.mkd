@@ -1,0 +1,178 @@
+
+## API dinámica para gestión de datos de clientes y plantillas
+
+### Descripción
+Este API proporciona funcionalidades para administrar datos de clientes (`ClientData`) y plantillas (`Template`). La principal característica es la capacidad de definir dinámicamente cómo se devuelve el objeto `ClientData` utilizando plantillas (`Template`).
+
+### Recursos Disponibles
+
+#### Obtener todos los datos de clientes
+
+- **Método:** GET
+- **Endpoint:** `/client-all`
+- **Descripción:** Retorna un arreglo JSON con todos los objetos `ClientData`.
+
+#### Obtener datos de cliente por ID
+
+- **Método:** GET
+- **Endpoint:** `/client/{id}`
+- **Parámetros de ruta:** id (cadena, obligatorio)
+- **Descripción:** Retorna el objeto `ClientData` correspondiente al ID especificado.
+
+#### Obtener datos de cliente segun la plantilla
+
+- **Método:** GET
+- **Endpoint:** `/client-by-template/{id}`
+- **Parámetros de ruta:** id (cadena, obligatorio)
+- **Parámetros de consulta:** templateId (cadena, opcional)
+- **Descripción:** Retorna un objeto JSON que puede contener propiedades adicionales basadas en la plantilla especificada.
+
+### Gestionar plantillas
+
+##### Crear una nueva plantilla
+
+- **Método:** POST
+- **Endpoint:** `/template`
+- **Cuerpo de la solicitud:** JSON con la definición de la plantilla (`Template`)
+- **Descripción:** Crea una nueva plantilla dinámica que define cómo se estructura y devuelve el objeto `ClientData`.
+
+##### Obtener todas las plantillas
+
+- **Método:** GET
+- **Endpoint:** `/template-all`
+- **Descripción:** Retorna un arreglo JSON con todas las plantillas disponibles.
+
+##### Obtener plantilla por ID
+
+- **Método:** GET
+- **Endpoint:** `/template/{id}`
+- **Parámetros de ruta:** id (cadena, obligatorio)
+- **Descripción:** Retorna la definición de la plantilla correspondiente al ID especificado.
+
+#### Obtener rutas de acceso de clientes
+
+- **Método:** GET
+- **Endpoint:** `/client-path`
+- **Descripción:** Retorna un arreglo JSON con rutas de acceso de clientes.
+
+El endpoint `/client-path` es utilizado para obtener las rutas de acceso o las rutas desde las cuales se pueden obtener los datos del objeto `ClientData`. A continuación, se explica qué representa cada elemento del arreglo JSON retornado por este endpoint:
+
+```json
+[
+  "Id",
+  "Name",
+  "LastName",
+  "DocumentNumber",
+  "Direction",
+  "Direction/Street",
+  "Direction/StreetNumber"
+]
+```
+
+- **`Id`**: Representa la propiedad opcional `id` del objeto `ClientData`, que identifica de manera única al cliente.
+- **`Name`**: Corresponde a la propiedad opcional `name` del objeto `ClientData`, que contiene el nombre del cliente.
+- **`LastName`**: Es la propiedad opcional `lastName` del objeto `ClientData`, que almacena el apellido del cliente.
+- **`DocumentNumber`**: Propiedad opcional `documentNumber` del objeto `ClientData`, que guarda el número de documento del cliente.
+- **`Direction`**: Es un objeto dentro del objeto `ClientData` que describe la dirección del cliente.
+- **`Direction/Street`**: Propiedad opcional `street` del objeto `Direction`, que indica la calle donde reside el cliente.
+- **`Direction/StreetNumber`**: Propiedad opcional `streetNumber` del objeto `Direction`, que especifica el número en la calle de residencia del cliente.
+
+### Funcionalidad del Endpoint
+
+Al llamar al endpoint `/client-path`, obtienes un arreglo JSON estructurado con estas cadenas de texto. Cada cadena representa una ruta de acceso dentro del objeto `ClientData`, indicando dónde se pueden encontrar los datos correspondientes dentro de la estructura del objeto.Este tipo de información es la base de la configuración y personalización de plantillas (`Template`)
+
+---
+
+### Plantillas: Explicación y Ejemplos
+
+Las plantillas (`Template`) permiten definir cómo se estructura y se devuelve el objeto `ClientData` dinámicamente. A continuación se presentan algunos ejemplos de plantillas con sus respectivas explicaciones y estructuras:
+
+#### Ejemplo 1: TEMPLATE_9
+
+```json
+{
+  "id": "TEMPLATE_9",
+  "templateProperties": {
+    "nombre": "Name",
+    "apellido": "LastName",
+    "direccion": {
+       "calle":"Direction/Street",
+       "numero":"Direction/StreetNumber"
+    }
+  }
+}
+```
+
+- **Explicación:** Esta plantilla (`TEMPLATE_9`) define las siguientes propiedades para el objeto `ClientData`:
+  - `nombre`: Se obtiene del campo `Name` del objeto `ClientData`.
+  - `apellido`: Se obtiene del campo `LastName` del objeto `ClientData`.
+  - `direccion`: Es un objeto anidado que incluye las propiedades `calle` y `numero`, obtenidas de `Direction/Street` y `Direction/StreetNumber` respectivamente dentro del objeto `ClientData`.
+
+#### Ejemplo 2: TEMPLATE_10
+
+```json
+{
+   "id": "TEMPLATE_10",
+   "templateProperties": {
+     "nombreCompleto": "Name + LastName",
+     "direccion": {
+       "calle":"Direction/Street",
+       "numero":"Direction/StreetNumber"
+     }
+   }
+}
+```
+
+- **Explicación:** En esta plantilla (`TEMPLATE_10`), se definen las siguientes propiedades:
+  - `nombreCompleto`: Es una concatenación de los campos `Name` y `LastName` del objeto `ClientData`.
+  - `direccion`: Es un objeto que contiene las propiedades `calle` y `numero`, obtenidas de `Direction/Street` y `Direction/StreetNumber` respectivamente dentro del objeto `ClientData`.
+
+#### Ejemplo 3: TEMPLATE_11
+
+```json
+{
+   "id": "TEMPLATE_11",
+   "templateProperties": {
+     "nombreCompleto": "Name + LastName",
+     "direccion": {
+       "direccionCompleta":"Direction/Street + Direction/StreetNumber" 
+     }
+   }
+}
+```
+
+- **Explicación:** La plantilla (`TEMPLATE_11`) define las siguientes propiedades:
+  - `nombreCompleto`: Es una concatenación de los campos `Name` y `LastName` del objeto `ClientData`.
+  - `direccion`: Es un objeto que contiene una única propiedad `direccionCompleta`, que es una concatenación de `Direction/Street` y `Direction/StreetNumber` dentro del objeto `ClientData`.
+
+---
+
+Estos ejemplos ilustran cómo las plantillas pueden personalizarse para extraer y estructurar datos específicos de los objetos `ClientData`, proporcionando flexibilidad en la manipulación y presentación de los datos según sea necesario.
+
+### Esquemas de datos
+
+#### `ClientData`
+
+- **Descripción:** Objeto que representa los datos de un cliente.
+- **Propiedades:**
+  - `id` (cadena, opcional)
+  - `name` (cadena, opcional)
+  - `lastName` (cadena, opcional)
+  - `documentNumber` (cadena, opcional)
+  - `direction` (objeto `Direction`, opcional)
+
+#### `Direction`
+
+- **Descripción:** Objeto que describe la dirección de un cliente.
+- **Propiedades:**
+  - `street` (cadena, opcional)
+  - `streetNumber` (cadena, opcional)
+
+#### `Template`
+
+- **Descripción:** Objeto que define una plantilla dinámica para el objeto `ClientData`.
+- **Propiedades:**
+  - `id` (cadena, opcional)
+  - `templateProperties` (objeto, opcional)
+
+---

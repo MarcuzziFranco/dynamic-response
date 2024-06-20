@@ -10,7 +10,6 @@
   }
 }
 
-
 {
    "id": "TEMPLATE_10",
    "templateProperties": {
@@ -22,9 +21,8 @@
   }
 }
 
-
 {
-   "id": "TEMPLATE_12",
+   "id": "TEMPLATE_11",
    "templateProperties": {
    "nombreCompleto": "Name + LastName",
    "direccion": {
